@@ -12,6 +12,31 @@ pool:
 variables:
   buildConfiguration: 'Release'
 
+# do this before all your .NET Core tasks
 steps:
+- task: DotNetCoreInstaller@0
+  inputs:
+    version: '2.1.300' # replace this value with the version that you need for your project
+    
+- script: dotnet restore    
+    
 - script: dotnet build --configuration $(buildConfiguration)
   displayName: 'dotnet build $(buildConfiguration)'
+    
+- task: DotNetCoreCLI@2
+  inputs:
+    command: publish
+    publishWebProjects: True
+    arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+    zipAfterPublish: True
+
+- task: PublishBuildArtifacts@1
+
+- task: AzureRmWebAppDeployment@3
+  inputs:
+    azureSubscription: 'Visual Studio Enterprise (6e29a904-623b-45e3-86b5-4ab4da3944a8)'
+    WebAppName: 'Octodemo-VSE-Pipeline'
+    Package: $(System.ArtifactsDirectory)/**/*.zip
+    
+    
+
