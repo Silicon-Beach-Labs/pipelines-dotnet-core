@@ -32,4 +32,9 @@ steps:
 
 - task: PublishBuildArtifacts@1
 
+- task: AzureRmWebAppDeployment@3
+  inputs:
+    azureSubscription: 'Visual Studio Enterprise (6e29a904-623b-45e3-86b5-4ab4da3944a8)'
+    WebAppName: 'Octodemo-VSE-Pipeline'
+    Package: $(System.ArtifactsDirectory)/**/*.zip
 
